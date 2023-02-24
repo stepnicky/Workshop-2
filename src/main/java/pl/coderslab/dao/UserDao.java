@@ -46,6 +46,18 @@ public class UserDao {
             return null;
         }
     }
+    public void update(User user) {
+        try (Connection conn = DbUtil.connect()) {
+            String updateEmail = "update users set email=? where id=?";
+            String updateUsername = "update users set username=? where id=?";
+            String updatePassword = "update users set password=? where id=?";
+            DbUtil.executeUpdate(conn, updateEmail, user.getEmail(), String.valueOf(user.getId()));
+            DbUtil.executeUpdate(conn, updateUsername, user.getUsername(), String.valueOf(user.getId()));
+            DbUtil.executeUpdate(conn, updatePassword, hashPassword(user.getPassword()), String.valueOf(user.getId()));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
     public String hashPassword(String password){
         String hashed = BCrypt.hashpw(password, BCrypt.gensalt());
         return hashed;

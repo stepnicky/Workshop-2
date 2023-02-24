@@ -15,7 +15,9 @@ public class MainDao {
 //        } catch (NullPointerException e) {
 //            System.err.println("user value is " + user);
 //        }
-
+        User user = userDao.read(8);
+        user.setEmail("a.nowak@gmail.com");
+        userDao.update(user);
 
     }
 
