@@ -22,10 +22,16 @@ public class MainDao {
 //        userDao.update(user);
 
 //        userDao.delete(8L);
-         User[] users = userDao.findAll();
-         for(User user : users) {
-             System.out.println(String.format("%s, %s, %s, %s", user.getId(), user.getEmail(), user.getUsername(), user.getPassword()));
-         }
+
+        User andrzej = userDao.read(9L);
+        andrzej.setUsername("andrewnowak");
+        andrzej.setPassword("alamakotaaa");
+        userDao.update(andrzej);
+
+        User[] users = userDao.findAll();
+        for(User user : users) {
+            System.out.println(String.format("%s, %s, %s, %s", user.getId(), user.getEmail(), user.getUsername(), user.getPassword()));
+        }
     }
 
 }

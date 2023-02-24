@@ -28,7 +28,7 @@ public class UserDao {
         }
     }
 
-    public User read(int userId) {
+    public User read(Long userId) {
         try (Connection conn = DbUtil.connect()) {
             String query = "select * from users where id=?";
             List<List<String>> userInMultiList = DbUtil.executeQuery(conn, query, String.valueOf(userId));
@@ -52,9 +52,19 @@ public class UserDao {
             String updateEmail = "update users set email=? where id=?";
             String updateUsername = "update users set username=? where id=?";
             String updatePassword = "update users set password=? where id=?";
-            DbUtil.executeUpdate(conn, updateEmail, user.getEmail(), String.valueOf(user.getId()));
-            DbUtil.executeUpdate(conn, updateUsername, user.getUsername(), String.valueOf(user.getId()));
-            DbUtil.executeUpdate(conn, updatePassword, hashPassword(user.getPassword()), String.valueOf(user.getId()));
+            User userBeforeUpdate = read(user.getId());
+            if(!userBeforeUpdate.getEmail().equals(user.getEmail())) {
+                DbUtil.executeUpdate(conn, updateEmail, user.getEmail(), String.valueOf(user.getId()));
+            }
+            if(!userBeforeUpdate.getUsername().equals(user.getUsername())) {
+                DbUtil.executeUpdate(conn, updateUsername, user.getUsername(), String.valueOf(user.getId()));
+            }
+            if(!BCrypt.checkpw(user.getPassword(), userBeforeUpdate.getPassword())) {
+                if(!user.getPassword().equals(userBeforeUpdate.getPassword())) {
+                    DbUtil.executeUpdate(conn, updatePassword, hashPassword(user.getPassword()), String.valueOf(user.getId()));
+                }
+            }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
