@@ -2,8 +2,8 @@ package pl.coderslab.model;
 
 public class User {
     private Long id;
-    private String username;
     private String email;
+    private String username;
     private String password;
 
     public User (String username, String email, String password) {
