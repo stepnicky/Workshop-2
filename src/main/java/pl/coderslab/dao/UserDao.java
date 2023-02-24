@@ -30,7 +30,11 @@ public class UserDao {
     public User read(int userId) {
         try (Connection conn = DbUtil.connect()) {
             String query = "select * from users where id=?";
-            List<String> userInList = DbUtil.executeQuery(conn, query, String.valueOf(userId)).get(0);
+            List<List<String>> userInMultiList = DbUtil.executeQuery(conn, query, String.valueOf(userId));
+            if(userInMultiList.size() == 0) {
+                return null;
+            }
+            List<String> userInList = userInMultiList.get(0);
             User user = new User();
             user.setId(Long.parseLong(userInList.get(0)));
             user.setEmail(userInList.get(1));

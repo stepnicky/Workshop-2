@@ -9,8 +9,14 @@ public class MainDao {
 //
 //        userDao.create(user1);
 //        System.out.println(user1.getId());
-        User user = userDao.read(8);
-        System.out.println(String.format("%s, %s, %s, %s", user.getId(), user.getEmail(), user.getUsername(), user.getPassword()));
+//        User user = userDao.read(11);
+//        try {
+//            System.out.println(String.format("%s, %s, %s, %s", user.getId(), user.getEmail(), user.getUsername(), user.getPassword()));
+//        } catch (NullPointerException e) {
+//            System.err.println("user value is " + user);
+//        }
+
+
     }
 
 }
