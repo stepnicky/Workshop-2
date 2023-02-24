@@ -1,6 +1,5 @@
 package pl.coderslab.model;
 
-import org.mindrot.jbcrypt.BCrypt;
 
 public class User {
     private Long id;
@@ -8,10 +7,14 @@ public class User {
     private String username;
     private String password;
 
+    public User() {
+
+    }
+
     public User (String email, String username, String password) {
         this.email = email;
         this.username = username;
-        this.password = hashPassword(password);
+        this.password = password;
     }
 
     public Long getId() {
@@ -43,11 +46,6 @@ public class User {
     }
 
     public void setPassword(String password) {
-        String hashed = hashPassword(password);
-        this.password = hashed;
-    }
-    public String hashPassword(String password){
-        String hashed = BCrypt.hashpw(password, BCrypt.gensalt());
-        return hashed;
+        this.password = password;
     }
 }

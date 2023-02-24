@@ -1,5 +1,6 @@
 package pl.coderslab.dao;
 
+import org.mindrot.jbcrypt.BCrypt;
 import pl.coderslab.model.User;
 import pl.coderslab.utils.DbUtil;
 
@@ -13,10 +14,10 @@ public class UserDao {
     public User create(User user) {
         try (Connection conn = DbUtil.connect()) {
             String query = "insert into users(email, username, password) values(?,?,?)";
-            String[] values = {user.getEmail(), user.getUsername(), user.getPassword()};
-            DbUtil.executeUpdate(DbUtil.connect(), query, values);
-            List<List<String>> idInList = new ArrayList<>();
-            idInList = DbUtil.executeQuery(DbUtil.connect(), "select max(id) from users");
+            String[] values = {user.getEmail(), user.getUsername(), hashPassword(user.getPassword())};
+            DbUtil.executeUpdate(conn, query, values);
+            List<List<String>> idInList;
+            idInList = DbUtil.executeQuery(conn, "select max(id) from users");
             String id = idInList.get(0).get(0);
             user.setId(Long.parseLong(id));
             return user;
@@ -24,5 +25,25 @@ public class UserDao {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public User read(int userId) {
+        try (Connection conn = DbUtil.connect()) {
+            String query = "select * from users where id=?";
+            List<String> userInList = DbUtil.executeQuery(conn, query, String.valueOf(userId)).get(0);
+            User user = new User();
+            user.setId(Long.parseLong(userInList.get(0)));
+            user.setEmail(userInList.get(1));
+            user.setUsername(userInList.get(2));
+            user.setPassword(userInList.get(3));
+            return user;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    public String hashPassword(String password){
+        String hashed = BCrypt.hashpw(password, BCrypt.gensalt());
+        return hashed;
     }
 }
