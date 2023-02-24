@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class UserDao {
@@ -57,6 +58,41 @@ public class UserDao {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+    public void delete(Long userId) {
+        try(Connection conn = DbUtil.connect()) {
+            DbUtil.remove(conn, userId);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    public User[] findAll() {
+        String query = "select * from users";
+        try (Connection conn = DbUtil.connect()){
+            List<List<String>> multiListOfUsers = DbUtil.executeQuery(conn, query);
+            if(multiListOfUsers.size() < 1) {
+                return new User[0];
+            }
+            User[] users = new User[0];
+            for(int i = 0; i < multiListOfUsers.size(); i++) {
+                List<String> row = multiListOfUsers.get(i);
+                User user = new User();
+                user.setId(Long.parseLong(row.get(0)));
+                user.setEmail(row.get(1));
+                user.setUsername(row.get(2));
+                user.setPassword(row.get(3));
+                users = addToArray(user, users);
+            }
+            return users;
+        } catch(SQLException e) {
+            e.printStackTrace();
+            return new User[0];
+        }
+    }
+    public User[] addToArray(User u, User[] users) {
+        User[] copyUsers = Arrays.copyOf(users, users.length + 1);
+        copyUsers[users.length] = u;
+        return copyUsers;
     }
     public String hashPassword(String password){
         String hashed = BCrypt.hashpw(password, BCrypt.gensalt());
